@@ -14,6 +14,7 @@ impl HttpServerConfig {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[allow(dead_code)]
 struct AppState {}
 
 pub struct HttpServer {
