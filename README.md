@@ -4,7 +4,7 @@
   </a>
 </p>
 
-<h3 align="center">Kanri</h3>[.gitignore](.gitignore)
+<h3 align="center">Kanri</h3>
 <p align="center">The Rust microservice to manage and monitor the game servers</p>
 
 <div align="center">
