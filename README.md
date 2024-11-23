@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/hypolia/kanri">
-    <img src="https://cdn.discordapp.com/attachments/936741758635769866/1308489401172492389/kanri.webp?ex=673e2137&is=673ccfb7&hm=f260c5d8b0a3ab9a1347b8dd8ac15030c1d15e0e59e6d3c350467e4285f295c4&" width="200px" alt="Kanri" />
+    <img src="https://raw.githubusercontent.com/Hypolia/public-resources/main/kanri.webp" width="200px" alt="Kanri" />
   </a>
 </p>
 
