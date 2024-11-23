@@ -2,9 +2,10 @@ mod handlers;
 mod responses;
 
 use crate::application::http::handlers::create_server::create_server;
+use crate::application::http::handlers::get_server::get_server;
 use crate::domain::server::ports::ServerService;
 use anyhow::Context;
-use axum::routing::post;
+use axum::routing::{get, post};
 use axum::Extension;
 use std::sync::Arc;
 use tokio::net;
@@ -78,5 +79,7 @@ fn api_routes<S>() -> axum::Router<AppState<S>>
 where
     S: ServerService + Send + Sync + 'static,
 {
-    axum::Router::new().route("/servers", post(create_server::<S>))
+    axum::Router::new()
+        .route("/servers", post(create_server::<S>))
+        .route("/servers/:id", get(get_server::<S>))
 }

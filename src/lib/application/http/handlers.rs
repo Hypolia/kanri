@@ -1,4 +1,5 @@
 pub mod create_server;
+pub mod get_server;
 
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde::Serialize;

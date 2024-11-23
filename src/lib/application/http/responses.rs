@@ -22,4 +22,3 @@ pub struct ApiErrorDetail {
     pub rule: String,
     pub field: String,
 }
-
