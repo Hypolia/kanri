@@ -1,6 +1,14 @@
+mod handlers;
+mod responses;
+
+use crate::application::http::handlers::create_server::create_server;
+use crate::domain::server::ports::ServerService;
 use anyhow::Context;
+use axum::routing::post;
+use axum::Extension;
+use std::sync::Arc;
 use tokio::net;
-use tracing::info;
+use tracing::{info, info_span};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HttpServerConfig {
@@ -13,9 +21,13 @@ impl HttpServerConfig {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-#[allow(dead_code)]
-struct AppState {}
+#[derive(Debug, Clone)]
+struct AppState<S>
+where
+    S: ServerService,
+{
+    server_service: Arc<S>,
+}
 
 pub struct HttpServer {
     router: axum::Router,
@@ -23,8 +35,24 @@ pub struct HttpServer {
 }
 
 impl HttpServer {
-    pub async fn new(config: HttpServerConfig) -> anyhow::Result<Self> {
-        let router = axum::Router::new();
+    pub async fn new<S>(config: HttpServerConfig, server_service: Arc<S>) -> anyhow::Result<Self>
+    where
+        S: ServerService,
+    {
+        let trace_layer = tower_http::trace::TraceLayer::new_for_http().make_span_with(
+            |request: &axum::extract::Request| {
+                let uri: String = request.uri().to_string();
+                info_span!("http_request", method = ?request.method(), uri)
+            },
+        );
+
+        let state = AppState { server_service };
+
+        let router = axum::Router::new()
+            .nest("/v1", api_routes())
+            .layer(trace_layer)
+            .layer(Extension(Arc::clone(&state.server_service)))
+            .with_state(state);
 
         let listener = net::TcpListener::bind(format!("0.0.0.0:{}", config.port))
             .await
@@ -44,4 +72,11 @@ impl HttpServer {
 
         Ok(())
     }
+}
+
+fn api_routes<S>() -> axum::Router<AppState<S>>
+where
+    S: ServerService + Send + Sync + 'static,
+{
+    axum::Router::new().route("/servers", post(create_server::<S>))
 }

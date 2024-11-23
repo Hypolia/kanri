@@ -1,5 +1,6 @@
-use crate::domain::models::ServerStatus;
-use crate::domain::ports::ServerRepository;
+use crate::domain::server::models::server::{Server, ServerError};
+use crate::domain::server::models::server_validator::CreateServer;
+use crate::domain::server::ports::ServerRepository;
 use crate::infrastructure::db::postgres::Postgres;
 use std::sync::Arc;
 
@@ -15,19 +16,26 @@ impl PostgresServerRepository {
 }
 
 impl ServerRepository for PostgresServerRepository {
-    async fn create_server(&self, address: String, status: ServerStatus) -> Result<(), anyhow::Error> {
+    async fn create_server(&self, payload: CreateServer) -> Result<Server, ServerError> {
         let uuid: uuid::Uuid = uuid::Uuid::new_v4();
 
-        sqlx::query_as!(
+        let server = sqlx::query_as!(
             Server,
-            r#"INSERT INTO servers (id, address, status) VALUES ($1, $2, $3)"#,
+            r#"INSERT INTO servers (id, name, player_count, max_player_count, server_type, status, address)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id, name, player_count, max_player_count, server_type, status, address"#,
             uuid,
-            address,
-            status.to_string()
+            payload.name,
+            payload.player_count,
+            payload.max_player_count,
+            payload.server_type.to_string(),
+            payload.status.to_string(),
+            payload.address
         )
-        .execute(&*self.postgres.get_pool())
-        .await?;
+        .fetch_one(&*self.postgres.get_pool())
+        .await
+            .map_err(|e| ServerError::CreateError(e.to_string()))?;
 
-        Ok(())
+        Ok(server)
     }
 }
