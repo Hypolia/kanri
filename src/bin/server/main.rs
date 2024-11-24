@@ -5,6 +5,7 @@ use kanri::env::Env;
 use kanri::infrastructure::db::postgres::Postgres;
 use kanri::infrastructure::server::postgres::server_repository::PostgresServerRepository;
 use std::sync::Arc;
+use kanri::infrastructure::messaging::nats::Nats;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -14,6 +15,8 @@ async fn main() -> anyhow::Result<()> {
     let env = Arc::new(Env::parse());
 
     let postgres = Arc::new(Postgres::new(Arc::clone(&env)).await?);
+
+    let _messaging = Arc::new(Nats::new(&env.nats_url).await?);
 
     let server_repository = PostgresServerRepository::new(Arc::clone(&postgres));
     let server_service = Arc::new(ServerServiceImpl::new(server_repository));
