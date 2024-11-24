@@ -1,2 +1,2 @@
 pub mod messaging_ports;
-mod messaging_subscriber_ports;
+pub mod messaging_subscriber_ports;
