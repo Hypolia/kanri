@@ -6,5 +6,8 @@ pub struct Env {
     pub port: String,
 
     #[clap(env)]
+    pub nats_url: String,
+
+    #[clap(env)]
     pub database_url: String,
 }
