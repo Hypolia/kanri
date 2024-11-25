@@ -26,4 +26,8 @@ where
     async fn create_server(&self, server: CreateServer) -> Result<Server, ServerError> {
         self.server_repository.create_server(server).await
     }
+
+    async fn find_by_id(&self, id: String) -> Result<Server, ServerError> {
+        self.server_repository.find_by_id(id).await
+    }
 }
