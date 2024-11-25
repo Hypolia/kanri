@@ -38,4 +38,21 @@ impl ServerRepository for PostgresServerRepository {
 
         Ok(server)
     }
+
+    async fn find_by_id(&self, id: String) -> Result<Server, ServerError> {
+        let uuid = uuid::Uuid::parse_str(&id).map_err(|_e| ServerError::NotFound)?;
+
+        let server = sqlx::query_as!(
+            Server,
+            r#"SELECT id, name, player_count, max_player_count, server_type, status, address
+            FROM servers
+            WHERE id = $1"#,
+            uuid
+        )
+        .fetch_one(&*self.postgres.get_pool())
+        .await
+        .map_err(|_| ServerError::NotFound)?;
+
+        Ok(server)
+    }
 }
