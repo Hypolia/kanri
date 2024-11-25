@@ -5,7 +5,7 @@ use validator::Validate;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Deserialize, Validate)]
 pub struct CreateServer {
-/*    #[validate(length(min = 3, max = 50))]
+    /*    #[validate(length(min = 3, max = 50))]
     pub name: String,*/
     #[validate(range(min = 0, max = 100))]
     pub player_count: i32,

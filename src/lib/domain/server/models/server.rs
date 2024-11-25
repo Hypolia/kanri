@@ -34,3 +34,10 @@ pub struct Metadata {
     pub created_by: Option<String>,
     pub version: Option<String>,
 }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ServerCreatedMessage {
+    pub server_id: String,
+    pub name: String,
+    pub server_type: String,
+}
