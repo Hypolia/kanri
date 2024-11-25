@@ -16,7 +16,11 @@ impl PostgresServerRepository {
 }
 
 impl ServerRepository for PostgresServerRepository {
-    async fn create_server(&self, payload: CreateServer, name: String) -> Result<Server, ServerError> {
+    async fn create_server(
+        &self,
+        payload: CreateServer,
+        name: String,
+    ) -> Result<Server, ServerError> {
         let uuid: uuid::Uuid = uuid::Uuid::new_v4();
 
         let server = sqlx::query_as!(
