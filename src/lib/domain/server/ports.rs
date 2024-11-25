@@ -7,6 +7,7 @@ pub trait ServerService: Clone + Send + Sync + 'static {
         &self,
         server: CreateServer,
     ) -> impl Future<Output = Result<Server, ServerError>> + Send;
+    fn find_by_id(&self, id: String) -> impl Future<Output = Result<Server, ServerError>> + Send;
 }
 
 pub trait ServerRepository: Clone + Send + Sync + 'static {
@@ -14,4 +15,5 @@ pub trait ServerRepository: Clone + Send + Sync + 'static {
         &self,
         payload: CreateServer,
     ) -> impl Future<Output = Result<Server, ServerError>> + Send;
+    fn find_by_id(&self, id: String) -> impl Future<Output = Result<Server, ServerError>> + Send;
 }
