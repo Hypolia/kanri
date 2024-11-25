@@ -8,15 +8,11 @@ use serde::Serialize;
 use std::sync::Arc;
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
-pub struct CreateServerResponseData {
-    id: String,
-}
+pub struct CreateServerResponseData(Server);
 
 impl From<&Server> for CreateServerResponseData {
     fn from(value: &Server) -> Self {
-        CreateServerResponseData {
-            id: value.id.to_string(),
-        }
+        CreateServerResponseData(value.clone())
     }
 }
 
