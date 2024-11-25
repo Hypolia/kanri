@@ -6,6 +6,7 @@ use sqlx::Type;
 pub enum ServerStatus {
     Offline,
     Waiting,
+    Scheduled,
     Error,
     Running,
     Finished,
@@ -22,6 +23,7 @@ impl std::fmt::Display for ServerStatus {
             ServerStatus::Running => write!(f, "running"),
             ServerStatus::Finished => write!(f, "finished"),
             ServerStatus::Unknown => write!(f, "unknown"),
+            ServerStatus::Scheduled => write!(f, "scheduled"),
         }
     }
 }
@@ -34,6 +36,7 @@ impl From<String> for ServerStatus {
             "error" => ServerStatus::Error,
             "running" => ServerStatus::Running,
             "finished" => ServerStatus::Finished,
+            "scheduled" => ServerStatus::Scheduled,
             _ => ServerStatus::Unknown,
         }
     }
