@@ -24,6 +24,8 @@ impl From<ServerError> for ApiError {
     fn from(e: ServerError) -> Self {
         match e {
             ServerError::CreateError(e) => Self::InternalServerError(e.to_string()),
+            ServerError::InvalidId(_e) => Self::InternalServerError("server not found".to_string()),
+            ServerError::NotFound => Self::NotFound("server not found".to_string()),
         }
     }
 }
