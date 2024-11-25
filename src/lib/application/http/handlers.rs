@@ -1,6 +1,7 @@
 pub mod create_server;
 pub mod get_server;
 
+use crate::application::http::responses::ApiResponseError;
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde::Serialize;
 
@@ -31,6 +32,7 @@ impl<T: Serialize + PartialEq> IntoResponse for ApiSuccess<T> {
 pub enum ApiError {
     InternalServerError(String),
     UnProcessableEntity(String),
+    NotFound(String),
 }
 
 impl From<anyhow::Error> for ApiError {
@@ -87,6 +89,15 @@ impl IntoResponse for ApiError {
             ApiError::UnProcessableEntity(errors) => {
                 (StatusCode::UNPROCESSABLE_ENTITY, Json(errors)).into_response()
             }
+            ApiError::NotFound(message) => (
+                StatusCode::NOT_FOUND,
+                Json(ApiResponseError {
+                    code: "E_NOT_FOUND".to_string(),
+                    status: 404,
+                    message,
+                }),
+            )
+                .into_response(),
         }
     }
 }

@@ -22,3 +22,10 @@ pub struct ApiErrorDetail {
     pub rule: String,
     pub field: String,
 }
+
+#[derive(Debug, Deserialize, Clone, Eq, PartialEq, Serialize)]
+pub struct ApiResponseError {
+    pub code: String,
+    pub status: u16,
+    pub message: String,
+}
