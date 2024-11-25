@@ -1,8 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use std::str::FromStr;
 
-#[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd, Deserialize, Type)]
+#[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd, Deserialize, Type, Serialize)]
 #[sqlx(type_name = "server_type")]
 #[serde(rename_all = "snake_case")]
 pub enum ServerType {
