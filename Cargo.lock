@@ -1127,6 +1127,7 @@ dependencies = [
  "clap",
  "dotenv",
  "futures",
+ "rand",
  "serde",
  "serde_json",
  "sqlx",

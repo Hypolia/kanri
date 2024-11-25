@@ -14,6 +14,7 @@ pub trait ServerRepository: Clone + Send + Sync + 'static {
     fn create_server(
         &self,
         payload: CreateServer,
+        name: String,
     ) -> impl Future<Output = Result<Server, ServerError>> + Send;
     fn find_by_id(&self, id: String) -> impl Future<Output = Result<Server, ServerError>> + Send;
 }

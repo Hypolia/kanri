@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
-use std::str::FromStr;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Deserialize, PartialOrd, Ord, Type, Serialize)]
 #[sqlx(type_name = "status")]
@@ -36,21 +35,6 @@ impl From<String> for ServerStatus {
             "running" => ServerStatus::Running,
             "finished" => ServerStatus::Finished,
             _ => ServerStatus::Unknown,
-        }
-    }
-}
-
-impl FromStr for ServerStatus {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "offline" => Ok(ServerStatus::Offline),
-            "waiting" => Ok(ServerStatus::Waiting),
-            "error" => Ok(ServerStatus::Error),
-            "running" => Ok(ServerStatus::Running),
-            "finished" => Ok(ServerStatus::Finished),
-            _ => Err(format!("Invalid server status: {}", s)),
         }
     }
 }
