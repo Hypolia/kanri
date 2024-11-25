@@ -1,8 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use std::str::FromStr;
 
-#[derive(Debug, Clone, Default, PartialEq, Eq, Deserialize, PartialOrd, Ord, Type)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Deserialize, PartialOrd, Ord, Type, Serialize)]
 #[sqlx(type_name = "status")]
 pub enum ServerStatus {
     Offline,

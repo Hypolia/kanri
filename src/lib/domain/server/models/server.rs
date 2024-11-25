@@ -8,10 +8,15 @@ use thiserror::Error;
 pub enum ServerError {
     #[error("Server create error: {0}")]
     CreateError(String),
+    #[error("Server id is invalid: {0}")]
+    InvalidId(String),
+    #[error("Server not found")]
+    NotFound,
 }
 
-#[derive(Debug, Clone, FromRow)]
+#[derive(Debug, Clone, FromRow, Ord, PartialOrd, Eq, PartialEq, Serialize)]
 pub struct Server {
+    #[serde(serialize_with = "uuid::serde::simple::serialize")]
     pub id: uuid::Uuid,
     pub name: String,
     pub player_count: i32,
