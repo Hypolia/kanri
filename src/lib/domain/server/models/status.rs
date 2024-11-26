@@ -1,8 +1,10 @@
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
+use std::str::FromStr;
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Deserialize, PartialOrd, Ord, Type, Serialize)]
 #[sqlx(type_name = "status")]
+#[serde(rename_all = "snake_case")]
 pub enum ServerStatus {
     Offline,
     Waiting,
@@ -38,6 +40,22 @@ impl From<String> for ServerStatus {
             "finished" => ServerStatus::Finished,
             "scheduled" => ServerStatus::Scheduled,
             _ => ServerStatus::Unknown,
+        }
+    }
+}
+
+impl FromStr for ServerStatus {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "offline" => Ok(ServerStatus::Offline),
+            "waiting" => Ok(ServerStatus::Waiting),
+            "error" => Ok(ServerStatus::Error),
+            "running" => Ok(ServerStatus::Running),
+            "finished" => Ok(ServerStatus::Finished),
+            "scheduled" => Ok(ServerStatus::Scheduled),
+            _ => Err(format!("Unknown server_status: {}", s)),
         }
     }
 }

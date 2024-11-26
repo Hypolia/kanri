@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
+use std::str::FromStr;
 
 #[derive(Debug, Clone, Eq, Ord, PartialEq, PartialOrd, Deserialize, Type, Serialize)]
 #[sqlx(type_name = "server_type")]
@@ -24,6 +25,18 @@ impl From<String> for ServerType {
             "hikabrain" => ServerType::Hikabrain,
             "lobby" => ServerType::Lobby,
             _ => ServerType::Hikabrain,
+        }
+    }
+}
+
+impl FromStr for ServerType {
+    type Err = String;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "hikabrain" => Ok(ServerType::Hikabrain),
+            "lobby" => Ok(ServerType::Lobby),
+            _ => Err(format!("Unknown server_type: {}", s)),
         }
     }
 }
