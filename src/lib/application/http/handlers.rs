@@ -1,5 +1,6 @@
 pub mod create_server;
 pub mod get_server;
+pub mod get_servers;
 
 use crate::application::http::responses::ApiResponseError;
 use axum::{http::StatusCode, response::IntoResponse, Json};
