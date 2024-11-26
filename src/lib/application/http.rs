@@ -3,6 +3,7 @@ mod responses;
 
 use crate::application::http::handlers::create_server::create_server;
 use crate::application::http::handlers::get_server::get_server;
+use crate::application::http::handlers::get_servers::get_servers;
 use crate::domain::server::ports::ServerService;
 use anyhow::Context;
 use axum::routing::{get, post};
@@ -81,5 +82,6 @@ where
 {
     axum::Router::new()
         .route("/servers", post(create_server::<S>))
+        .route("/servers", get(get_servers::<S>))
         .route("/servers/:id", get(get_server::<S>))
 }
