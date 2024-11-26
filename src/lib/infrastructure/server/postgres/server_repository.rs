@@ -1,5 +1,6 @@
 use crate::domain::server::models::server::{Server, ServerError};
 use crate::domain::server::models::server_validator::CreateServer;
+use crate::domain::server::models::status::ServerStatus;
 use crate::domain::server::ports::ServerRepository;
 use crate::infrastructure::db::postgres::Postgres;
 use std::sync::Arc;
@@ -58,5 +59,18 @@ impl ServerRepository for PostgresServerRepository {
         .map_err(|_| ServerError::NotFound)?;
 
         Ok(server)
+    }
+
+    async fn find_all(&self, _status: Option<ServerStatus>) -> Result<Vec<Server>, ServerError> {
+        let servers = sqlx::query_as!(
+            Server,
+            r#"SELECT id, name, player_count, max_player_count, server_type, status, address
+            FROM servers"#,
+        )
+        .fetch_all(&*self.postgres.get_pool())
+        .await
+        .map_err(|_| ServerError::NotFound)?;
+
+        Ok(servers)
     }
 }

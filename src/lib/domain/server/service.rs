@@ -2,6 +2,7 @@ use crate::application::ports::messaging_ports::MessagingPort;
 use crate::domain::server::models::server::{Server, ServerCreatedMessage, ServerError};
 use crate::domain::server::models::server_type::ServerType;
 use crate::domain::server::models::server_validator::CreateServer;
+use crate::domain::server::models::status::ServerStatus;
 use crate::domain::server::ports::{ServerRepository, ServerService};
 use rand::{thread_rng, Rng};
 use std::sync::Arc;
@@ -76,5 +77,9 @@ where
 
     async fn find_by_id(&self, id: String) -> Result<Server, ServerError> {
         self.server_repository.find_by_id(id).await
+    }
+
+    async fn find_all(&self, status: Option<ServerStatus>) -> Result<Vec<Server>, ServerError> {
+        self.server_repository.find_all(status).await
     }
 }
