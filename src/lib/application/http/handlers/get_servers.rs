@@ -31,10 +31,8 @@ pub async fn get_servers<S: ServerService>(
     Extension(server_service): Extension<Arc<S>>,
     Query(params): Query<Params>,
 ) -> Result<ApiSuccess<GetServersResponseData>, ApiError> {
-    println!("{:?}", params.server_type);
-    println!("{:?}", params.status);
     server_service
-        .find_all(params.status)
+        .find_all(params.status, params.server_type)
         .await
         .map_err(ApiError::from)
         .map(|servers| ApiSuccess::new(StatusCode::OK, servers.into()))
