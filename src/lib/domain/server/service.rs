@@ -82,12 +82,16 @@ where
     async fn find_all(
         &self,
         status: Option<ServerStatus>,
-        server_type: Option<ServerType>
+        server_type: Option<ServerType>,
     ) -> Result<Vec<Server>, ServerError> {
         match (status, server_type) {
-            (Some(status), Some(server_type)) => self.server_repository.find_all().await,
+            (Some(status), Some(server_type)) => {
+                self.server_repository
+                    .find_by_status_and_type(status, server_type)
+                    .await
+            }
             (Some(status), None) => self.server_repository.find_by_status(status).await,
-            (None, Some(server_type)) => self.server_repository.find_all().await,
+            (None, Some(server_type)) => self.server_repository.find_by_type(server_type).await,
             (None, None) => self.server_repository.find_all().await,
         }
     }

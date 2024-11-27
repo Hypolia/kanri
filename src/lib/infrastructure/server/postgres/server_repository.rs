@@ -1,5 +1,5 @@
-use std::future::Future;
 use crate::domain::server::models::server::{Server, ServerError};
+use crate::domain::server::models::server_type::ServerType;
 use crate::domain::server::models::server_validator::CreateServer;
 use crate::domain::server::models::status::ServerStatus;
 use crate::domain::server::ports::ServerRepository;
@@ -85,6 +85,46 @@ impl ServerRepository for PostgresServerRepository {
             FROM servers
             WHERE status = $1"#,
             status.to_string()
+        )
+        .fetch_all(&*self.postgres.get_pool())
+        .await
+        .map_err(|_| ServerError::NotFound)?;
+
+        Ok(servers)
+    }
+
+    async fn find_by_type(&self, server_type: ServerType) -> Result<Vec<Server>, ServerError> {
+        info!("Finding servers by type: {:?}", server_type);
+        let servers = sqlx::query_as!(
+            Server,
+            r#"SELECT id, name, player_count, max_player_count, server_type, status, address
+            FROM servers
+            WHERE server_type = $1"#,
+            server_type.to_string()
+        )
+        .fetch_all(&*self.postgres.get_pool())
+        .await
+        .map_err(|_| ServerError::NotFound)?;
+
+        Ok(servers)
+    }
+
+    async fn find_by_status_and_type(
+        &self,
+        status: ServerStatus,
+        server_type: ServerType,
+    ) -> Result<Vec<Server>, ServerError> {
+        info!(
+            "Finding servers by status: {:?} and type: {:?}",
+            status, server_type
+        );
+        let servers = sqlx::query_as!(
+            Server,
+            r#"SELECT id, name, player_count, max_player_count, server_type, status, address
+            FROM servers
+            WHERE status = $1 AND server_type = $2"#,
+            status.to_string(),
+            server_type.to_string()
         )
         .fetch_all(&*self.postgres.get_pool())
         .await
