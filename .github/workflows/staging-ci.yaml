@@ -1,0 +1,37 @@
+name: staging-ci.yaml
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+rc[0-9]+'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  extract-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract_version.outputs.VERSION }}
+    steps:
+      - name: Extract version
+        id: extract_version
+        run: echo "VERSION=$(echo $GITHUB_REF | sed -n 's/refs\/tags\/v//p')" >> $GITHUB_OUTPUT
+  check-service:
+    uses: hypolia/infrastructure/.github/workflows/check-service.yaml@main
+    with:
+      repository: hypolia/kanri
+      ref: main
+    secrets:
+      PAT: ${{ secrets.GITHUB_TOKEN }}
+  build-and-push:
+    needs: [check-service, extract-version]
+    uses: hypolia/infrastructure/.github/workflows/build-and-push.yaml@main
+    with:
+      registry: ghcr.io
+      repository: hypolia/kanri
+      ref: main
+      tag: ${{ needs.extract-version.outputs.version }}
+      registry_username: ${{ github.actor }}
+    secrets:
+      PAT: ${{ secrets.GITHUB_TOKEN }}
