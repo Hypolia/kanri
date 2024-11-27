@@ -22,6 +22,7 @@ impl From<ServerError> for ApiError {
             ServerError::CreateError(e) => Self::InternalServerError(e.to_string()),
             ServerError::InvalidId(_e) => Self::InternalServerError("server not found".to_string()),
             ServerError::NotFound => Self::NotFound("server not found".to_string()),
+            ServerError::DatabaseError(e) => Self::InternalServerError(e.to_string()),
         }
     }
 }
