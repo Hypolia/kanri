@@ -79,7 +79,16 @@ where
         self.server_repository.find_by_id(id).await
     }
 
-    async fn find_all(&self, status: Option<ServerStatus>) -> Result<Vec<Server>, ServerError> {
-        self.server_repository.find_all(status).await
+    async fn find_all(
+        &self,
+        status: Option<ServerStatus>,
+        server_type: Option<ServerType>
+    ) -> Result<Vec<Server>, ServerError> {
+        match (status, server_type) {
+            (Some(status), Some(server_type)) => self.server_repository.find_all().await,
+            (Some(status), None) => self.server_repository.find_by_status(status).await,
+            (None, Some(server_type)) => self.server_repository.find_all().await,
+            (None, None) => self.server_repository.find_all().await,
+        }
     }
 }

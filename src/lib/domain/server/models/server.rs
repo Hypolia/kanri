@@ -12,6 +12,8 @@ pub enum ServerError {
     InvalidId(String),
     #[error("Server not found")]
     NotFound,
+    #[error("Database error: {0}")]
+    DatabaseError(String),
 }
 
 #[derive(Debug, Clone, FromRow, Ord, PartialOrd, Eq, PartialEq, Serialize)]
