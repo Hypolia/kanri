@@ -15,9 +15,9 @@ pub struct GetServersResponseData(Vec<Server>);
 
 #[derive(Deserialize, Debug)]
 pub struct Params {
-    #[serde(deserialize_with = "parse_enum_optional")]
+    #[serde(deserialize_with = "parse_enum_optional", default)]
     status: Option<ServerStatus>,
-    #[serde(deserialize_with = "parse_enum_optional")]
+    #[serde(deserialize_with = "parse_enum_optional", default)]
     server_type: Option<ServerType>,
 }
 
