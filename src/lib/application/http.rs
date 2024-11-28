@@ -4,6 +4,7 @@ mod responses;
 use crate::application::http::handlers::create_server::create_server;
 use crate::application::http::handlers::get_server::get_server;
 use crate::application::http::handlers::get_servers::get_servers;
+use crate::application::http::handlers::health::health_check;
 use crate::domain::server::ports::ServerService;
 use anyhow::Context;
 use axum::routing::{get, post};
@@ -51,7 +52,7 @@ impl HttpServer {
         let state = AppState { server_service };
 
         let router = axum::Router::new()
-            .nest("/v1", api_routes())
+            .nest("", api_routes())
             .layer(trace_layer)
             .layer(Extension(Arc::clone(&state.server_service)))
             .with_state(state);
@@ -81,7 +82,8 @@ where
     S: ServerService + Send + Sync + 'static,
 {
     axum::Router::new()
-        .route("/servers", post(create_server::<S>))
-        .route("/servers", get(get_servers::<S>))
-        .route("/servers/:id", get(get_server::<S>))
+        .route("/", post(create_server::<S>))
+        .route("/", get(get_servers::<S>))
+        .route("/:id", get(get_server::<S>))
+        .route("/health", get(health_check))
 }
