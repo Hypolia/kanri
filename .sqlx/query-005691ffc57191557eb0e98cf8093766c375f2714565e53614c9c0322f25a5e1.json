@@ -1,0 +1,58 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, name, player_count, max_player_count, server_type, status, address\n            FROM servers\n            WHERE server_type = $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "player_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "max_player_count",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "server_type",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "status",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "address",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "005691ffc57191557eb0e98cf8093766c375f2714565e53614c9c0322f25a5e1"
+}
