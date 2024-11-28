@@ -9,5 +9,9 @@ pub struct Env {
     pub nats_url: String,
 
     #[clap(env)]
-    pub database_url: String,
+    pub database_host: String,
+    #[clap(env)]
+    pub database_user: String,
+    #[clap(env)]
+    pub database_password: String,
 }

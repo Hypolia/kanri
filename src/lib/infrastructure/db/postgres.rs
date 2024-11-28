@@ -12,9 +12,14 @@ pub struct Postgres {
 
 impl Postgres {
     pub async fn new(env: Arc<Env>) -> Result<Self> {
+        let database_url = format!(
+            "postgres://{}:{}@{}",
+            &env.database_user, &env.database_password, &env.database_host
+        );
+
         let pool = PgPoolOptions::new()
             .max_connections(5)
-            .connect(&env.database_url)
+            .connect(&database_url)
             .await
             .context("Failed to create Postgres pool")?;
 
