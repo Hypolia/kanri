@@ -1,0 +1,15 @@
+Thank you for installing {{ .Chart.Name }}!
+
+Your Kanri microservice has been successfully deployed.
+
+---
+
+Access Information
+
+- Application Name: {{ .Release.Name }}
+- Namespace: {{ .Release.Namespace }}
+- Service Name: {{ include "chart.fullname" . }}
+
+To access the application
+
+1. Inside the cluster (ClusterIP Service): `kubectl port-forward svc/{{ include "chart.fullname" . }} 8080:8080`

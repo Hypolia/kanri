@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  kanri:
+  - apiVersion: v2
+    appVersion: 0.1.2-rc3
+    created: "2024-11-30T00:03:36.063069+01:00"
+    description: A Helm chart for Kubernetes
+    digest: 1b9b98b4943921ac7fddeaa22d8b08519e8984e7670a3c4eef0794cbb80c60dd
+    name: kanri
+    type: application
+    urls:
+    - https://hypolia.github.io/kanri/kanri-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-11-30T00:03:36.062209+01:00"
