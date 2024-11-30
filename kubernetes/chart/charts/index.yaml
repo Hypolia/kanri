@@ -11,6 +11,6 @@ entries:
       - https://github.com/hypolia/kanri/tree/main/kubernetes/chart
     type: application
     urls:
-    - https://libreconnect.github.io/kanri/kanri-0.1.0.tgz
+    - https://hypolia.github.io/kanri/kanri-0.1.0.tgz
     version: 0.1.0
 generated: "2024-11-30T18:56:02.888185+01:00"
