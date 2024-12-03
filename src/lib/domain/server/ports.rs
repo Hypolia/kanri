@@ -1,4 +1,4 @@
-use crate::domain::server::models::server::{Server, ServerError};
+use crate::domain::server::models::server::{Server, ServerCreationResponse, ServerError};
 use crate::domain::server::models::server_type::ServerType;
 use crate::domain::server::models::server_validator::CreateServer;
 use crate::domain::server::models::status::ServerStatus;
@@ -15,6 +15,10 @@ pub trait ServerService: Clone + Send + Sync + 'static {
         status: Option<ServerStatus>,
         server_type: Option<ServerType>,
     ) -> impl Future<Output = Result<Vec<Server>, ServerError>> + Send;
+    fn handle_server_created(
+        &self,
+        message: ServerCreationResponse,
+    ) -> impl Future<Output = Result<(), ServerError>> + Send;
 }
 
 pub trait ServerRepository: Clone + Send + Sync + 'static {
@@ -38,4 +42,9 @@ pub trait ServerRepository: Clone + Send + Sync + 'static {
         status: ServerStatus,
         server_type: ServerType,
     ) -> impl Future<Output = Result<Vec<Server>, ServerError>> + Send;
+    fn update_status_by_id(
+        &self,
+        id: String,
+        status: ServerStatus,
+    ) -> impl Future<Output = Result<(), ServerError>> + Send;
 }

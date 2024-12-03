@@ -1,5 +1,4 @@
 use crate::domain::server::models::server_type::ServerType;
-use crate::domain::server::models::status::ServerStatus;
 use serde::Deserialize;
 use validator::Validate;
 
@@ -12,6 +11,6 @@ pub struct CreateServer {
     #[validate(range(min = 0, max = 100))]
     pub max_player_count: i32,
     pub server_type: ServerType,
-    pub status: ServerStatus,
+    //pub status: ServerStatus,
     pub address: String,
 }

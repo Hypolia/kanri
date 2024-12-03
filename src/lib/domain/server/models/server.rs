@@ -43,3 +43,11 @@ pub struct ServerCreatedMessage {
     pub name: String,
     pub server_type: String,
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ServerStatusUpdate {}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ServerCreationResponse {
+    pub server_id: String,
+}

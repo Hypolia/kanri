@@ -29,3 +29,6 @@ validator = { version = "0.19.0", features = ["derive"] }
 async-nats = "0.38.0"
 futures = "0.3.31"
 rand = "0.8.5"
+google-cloud-pubsub = "0.30.0"
+google-cloud-googleapis = "0.16.0"
+google-cloud-default = { version = "0.4.0", features = ["pubsub"] }

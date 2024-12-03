@@ -1,5 +1,7 @@
 use crate::application::ports::messaging_ports::MessagingPort;
-use crate::domain::server::models::server::{Server, ServerCreatedMessage, ServerError};
+use crate::domain::server::models::server::{
+    Server, ServerCreatedMessage, ServerCreationResponse, ServerError,
+};
 use crate::domain::server::models::server_type::ServerType;
 use crate::domain::server::models::server_validator::CreateServer;
 use crate::domain::server::models::status::ServerStatus;
@@ -94,5 +96,18 @@ where
             (None, Some(server_type)) => self.server_repository.find_by_type(server_type).await,
             (None, None) => self.server_repository.find_all().await,
         }
+    }
+
+    async fn handle_server_created(
+        &self,
+        message: ServerCreationResponse,
+    ) -> Result<(), ServerError> {
+        info!("Handling server created message: {:?}", message);
+
+        self.server_repository
+            .update_status_by_id(message.server_id, ServerStatus::Waiting)
+            .await?;
+
+        Ok(())
     }
 }

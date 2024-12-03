@@ -36,7 +36,7 @@ impl ServerRepository for PostgresServerRepository {
             payload.player_count,
             payload.max_player_count,
             payload.server_type.to_string(),
-            payload.status.to_string(),
+            ServerStatus::Created.to_string(),
             payload.address
         )
         .fetch_one(&*self.postgres.get_pool())
@@ -131,5 +131,26 @@ impl ServerRepository for PostgresServerRepository {
         .map_err(|_| ServerError::NotFound)?;
 
         Ok(servers)
+    }
+
+    async fn update_status_by_id(
+        &self,
+        id: String,
+        status: ServerStatus,
+    ) -> Result<(), ServerError> {
+        let uuid = uuid::Uuid::parse_str(&id).map_err(|_e| ServerError::NotFound)?;
+
+        sqlx::query!(
+            r#"UPDATE servers
+            SET status = $1
+            WHERE id = $2"#,
+            status.to_string(),
+            uuid
+        )
+        .execute(&*self.postgres.get_pool())
+        .await
+        .map_err(|_| ServerError::NotFound)?;
+
+        Ok(())
     }
 }

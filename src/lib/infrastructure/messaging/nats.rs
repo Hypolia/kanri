@@ -1,5 +1,4 @@
 use crate::application::ports::messaging_ports::MessagingPort;
-use crate::application::ports::messaging_subscriber_ports::MessagingSubscriberPort;
 use async_nats::Client;
 use futures::StreamExt;
 use serde::de::DeserializeOwned;
@@ -35,9 +34,6 @@ impl MessagingPort for Nats {
             .map_err(|e| anyhow::anyhow!(e.to_string()))
             .map(|_| ())
     }
-}
-
-impl MessagingSubscriberPort for Nats {
     async fn subscribe<F, T, Fut>(&self, topic: &str, handler: F) -> anyhow::Result<()>
     where
         F: Fn(T) -> Fut + Send + Sync + 'static,
@@ -53,14 +49,23 @@ impl MessagingSubscriberPort for Nats {
             .await
             .map_err(|e| anyhow::anyhow!(e.to_string()))?;
 
-        while let Some(message) = subscriber.next().await {
-            let message_str = String::from_utf8_lossy(&message.payload).to_string();
+        tokio::spawn(async move {
+            while let Some(message) = subscriber.next().await {
+                let message_str = String::from_utf8_lossy(&message.payload).to_string();
 
-            let parsed_message: T =
-                serde_json::from_str(&message_str).map_err(|e| anyhow::anyhow!(e.to_string()))?;
+                let parsed_message: T = match serde_json::from_str(&message_str) {
+                    Ok(msg) => msg,
+                    Err(e) => {
+                        tracing::error!("Failed to parse message: {:?}", e);
+                        continue;
+                    }
+                };
 
-            handler(parsed_message).await?;
-        }
+                if let Err(e) = handler(parsed_message).await {
+                    tracing::error!("Failed to handle message: {:?}", e);
+                }
+            }
+        });
 
         Ok(())
     }
