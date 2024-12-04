@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE servers\n            SET status = $1\n            WHERE id = $2",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "808a0bfeb50630a703e6ec8bbf2af6995dff2ba87525b37f9d93ee4ecc7aa470"
+}
