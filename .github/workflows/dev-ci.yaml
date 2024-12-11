@@ -21,7 +21,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set short git commit SHA
         id: extract-version
-        run: echo "VERSION=$(echo git rev-parse --short ${{ github.sha }}) >> $GITHUB_OUTPUT"
+        run: |
+          echo ${{ github.sha }}
+          VERSION=$(git rev-parse --short ${{ github.sha }})
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
       - name: Confirm git commit SHA output
         run: echo ${{ steps.extract-version.outputs.VERSION }}
   build:
