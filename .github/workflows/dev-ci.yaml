@@ -1,0 +1,38 @@
+name: dev-ci.yaml
+
+
+on:
+  workflow_call:
+    secrets:
+      GCP_TOKEN:
+        required: true
+
+  push:
+    branches:
+      - main
+
+
+jobs:
+  extract-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract-version.outputs.VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set short git commit SHA
+        id: extract-version
+        run: echo "VERSION=$(echo git rev-parse --short ${{ github.sha }}) >> $GITHUB_OUTPUT"
+      - name: Confirm git commit SHA output
+        run: echo ${{ steps.extract-version.outputs.VERSION }}
+  build:
+    needs: [extract-version]
+    uses: hypolia/infrastructure/.github/workflows/gcp-cloud-build.yaml@main
+    with:
+        registry: europe-west1-docker.pkg.dev/nathael-dev
+        ref: main
+        repository: hypolia/kanri
+        tag: ${{ needs.extract.outputs.version }}
+        worker_pool: projects/nathael-dev/locations/europe-west1/workerPools/cicd-pool
+    secrets:
+      PAT: ${{ secrets.GITHUB_TOKEN }}
+      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}

@@ -12,6 +12,11 @@ use axum::Extension;
 use std::sync::Arc;
 use tokio::net;
 use tracing::{info, info_span};
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
+
+use crate::application::http::handlers::get_servers::__path_get_servers;
+use crate::application::http::handlers::get_servers::GetServersResponseData;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct HttpServerConfig {
@@ -31,6 +36,15 @@ where
 {
     server_service: Arc<S>,
 }
+
+#[derive(OpenApi)]
+#[openapi(
+    paths(get_servers),
+    components(
+        schemas(GetServersResponseData)
+    ),
+)]
+struct ApiDoc;
 
 pub struct HttpServer {
     router: axum::Router,
@@ -52,7 +66,9 @@ impl HttpServer {
         let state = AppState { server_service };
 
         let router = axum::Router::new()
-            .nest("", api_routes())
+            .nest("/v1", api_routes())
+            .merge(SwaggerUi::new("/swagger")
+                .url("/api-docs/openapi.json", ApiDoc::openapi()))
             .layer(trace_layer)
             .layer(Extension(Arc::clone(&state.server_service)))
             .with_state(state);
@@ -82,8 +98,9 @@ where
     S: ServerService + Send + Sync + 'static,
 {
     axum::Router::new()
-        .route("/", post(create_server::<S>))
-        .route("/", get(get_servers::<S>))
-        .route("/:id", get(get_server::<S>))
-        .route("/health", get(health_check))
+        .route("/servers/health", get(health_check))
+        .route("/servers", post(create_server::<S>))
+        .route("/servers", get(get_servers::<S>))
+        .route("/servers/:id", get(get_server::<S>))
+
 }

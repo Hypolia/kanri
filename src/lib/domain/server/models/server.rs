@@ -3,6 +3,7 @@ use crate::domain::server::models::status::ServerStatus;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use thiserror::Error;
+use utoipa::ToSchema;
 
 #[derive(Debug, Clone, Error)]
 pub enum ServerError {
@@ -16,7 +17,7 @@ pub enum ServerError {
     DatabaseError(String),
 }
 
-#[derive(Debug, Clone, FromRow, Ord, PartialOrd, Eq, PartialEq, Serialize)]
+#[derive(Debug, Clone, FromRow, Ord, PartialOrd, Eq, PartialEq, Serialize, ToSchema)]
 pub struct Server {
     #[serde(serialize_with = "uuid::serde::simple::serialize")]
     pub id: uuid::Uuid,

@@ -9,8 +9,9 @@ use axum::http::StatusCode;
 use axum::Extension;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+use utoipa::ToSchema;
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, ToSchema)]
 pub struct GetServersResponseData(Vec<Server>);
 
 #[derive(Deserialize, Debug)]
@@ -27,6 +28,19 @@ impl From<Vec<Server>> for GetServersResponseData {
     }
 }
 
+#[utoipa::path(
+    get,
+    path = "/v1/servers",
+    summary = "Récupérer la liste des serveurs",
+    tags = ["Servers"],
+    params(
+        ("status" = Option<ServerStatus>, Query, description = "Filtre sur le statut du serveur"),
+        ("server_type" = Option<ServerType>, Query, description = "Filtre sur le type de serveur")
+    ),
+    responses(
+        (status = 200, description = "Liste des serveurs récupérée avec succès", body = GetServersResponseData),
+    ),
+)]
 pub async fn get_servers<S: ServerService>(
     Extension(server_service): Extension<Arc<S>>,
     Query(params): Query<Params>,
