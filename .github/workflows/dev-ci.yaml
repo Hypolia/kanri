@@ -34,7 +34,7 @@ jobs:
         registry: europe-west1-docker.pkg.dev/nathael-dev
         ref: main
         repository: hypolia/kanri
-        tag: ${{ needs.extract.outputs.version }}
+        tag: ${{ needs.extract-version.outputs.version }}
         worker_pool: projects/nathael-dev/locations/europe-west1/workerPools/cicd-pool
     secrets:
       PAT: ${{ secrets.GITHUB_TOKEN }}
