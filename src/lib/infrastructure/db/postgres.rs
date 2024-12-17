@@ -13,8 +13,8 @@ pub struct Postgres {
 impl Postgres {
     pub async fn new(env: Arc<Env>) -> Result<Self> {
         let database_url = format!(
-            "postgres://{}:{}@{}/{}",
-            &env.database_user, &env.database_password, &env.database_host, &env.database_name
+            "postgres://{}:{}@{}:{}/{}",
+            &env.database_user, &env.database_password, &env.database_host, &env.database_port, &env.database_name
         );
 
         let pool = PgPoolOptions::new()

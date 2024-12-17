@@ -17,6 +17,8 @@ pub struct Env {
     pub database_password: String,
     #[clap(env)]
     pub database_name: String,
+    #[clap(env)]
+    pub database_port: String,
 
     #[clap(env)]
     pub nats_url: Option<String>,
