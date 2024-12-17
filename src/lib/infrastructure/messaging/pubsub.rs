@@ -61,9 +61,7 @@ impl MessagingPort for PubSubMessaging {
             ..Default::default()
         };
 
-        let t = format!("projects/nathael-dev/topics/{}", queue);
-
-        let subscription = self.client.subscription(&t);
+        let subscription = self.client.subscription(queue);
         let mut stream = subscription.subscribe(None).await?;
 
         tokio::spawn(async move {
