@@ -26,4 +26,6 @@ COPY --from=builder /app/target/release/kanri_server /usr/local/bin
 COPY --from=builder /usr/local/cargo/bin/sqlx /usr/local/bin/sqlx
 COPY --from=builder /app/migrations /app/migrations
 
+EXPOSE 80
+
 CMD [ "/usr/local/bin/kanri_server" ]
